@@ -424,14 +424,20 @@ decode QUADRANT default Unknown::unknown() {
           }});
       }
       format MatrixLoad {
-      0x1: matrix_ld({{
+      0x1: matrix_lda({{
             xc->tcBase()->getCpuPtr()->matrixUnit.a[i] = Mem_uw;
           }}, inst_flags=FloatMemReadOp);
       }
       format MatrixStore {
       0x2: matrix_st({{
             Mem_uw = xc->tcBase()->getCpuPtr()->matrixUnit.c[i];
+            xc->tcBase()->getCpuPtr()->matrixUnit.c[i] = 0;
           }}, inst_flags=FloatMemWriteOp);
+      }
+      format MatrixLoad {
+      0x3: matrix_ldb({{
+            xc->tcBase()->getCpuPtr()->matrixUnit.b[i] = Mem_uw;
+          }}, inst_flags=FloatMemReadOp);
       }
     }
         0x03: decode FUNCT3 {
