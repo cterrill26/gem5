@@ -52,6 +52,7 @@
 #else
 #include "arch/generic/interrupts.hh"
 #include "base/statistics.hh"
+#include "matrix/matrix_unit.hh"
 #include "mem/port_proxy.hh"
 #include "sim/clocked_object.hh"
 #include "sim/eventq.hh"
@@ -613,6 +614,9 @@ class BaseCPU : public ClockedObject
     const Cycles pwrGatingLatency;
     const bool powerGatingOnIdle;
     EventFunctionWrapper enterPwrGatingEvent;
+
+  public:
+    MatrixUnit matrixUnit;
 };
 
 #endif // THE_ISA == NULL_ISA

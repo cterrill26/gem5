@@ -416,8 +416,24 @@ decode QUADRANT default Unknown::unknown() {
                     Fd_bits = Mem;
                 }}, inst_flags=FloatMemReadOp);
             }
-        }
-
+    }
+  0x02: decode FUNCT3 {
+      format ROp {
+      0x0: matrix_multiply({{
+            xc->tcBase()->getCpuPtr()->matrixUnit.multiply();
+          }});
+      }
+      format MatrixLoad {
+      0x1: matrix_ld({{
+            xc->tcBase()->getCpuPtr()->matrixUnit.a[i] = Mem_uw;
+          }}, inst_flags=FloatMemReadOp);
+      }
+      format MatrixStore {
+      0x2: matrix_st({{
+            Mem_uw = xc->tcBase()->getCpuPtr()->matrixUnit.c[i];
+          }}, inst_flags=FloatMemWriteOp);
+      }
+    }
         0x03: decode FUNCT3 {
             format FenceOp {
                 0x0: fence({{
