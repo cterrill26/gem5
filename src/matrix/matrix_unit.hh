@@ -35,10 +35,9 @@ public:
 
   void transposea(){
         for (int i = 0; i < 4; ++i) {
-          for (int j = i+1; j < 4; ++j) {
-            int temp = a[i * 4 + j];
-            a[i * 4 + j] = a[j * 4 + i];
-            a[j * 4 + i] = temp;
+          for (int j = 0; j < 4; ++j) {
+            c[i * 4 + j] = a[j * 4 + i];
+            c[j * 4 + i] = a[i * 4 + j];
           }
         }
   }
@@ -46,10 +45,9 @@ public:
 
   void transposeb(){
         for (int i = 0; i < 4; ++i) {
-          for (int j = i+1; j < 4; ++j) {
-            int temp = b[i *4 + j];
-            b[i * 4 + j] = b[j * 4 + i];
-            b[j * 4 + i] = temp;
+          for (int j = 0; j < 4; ++j) {
+            c[i * 4 + j] = b[j * 4 + i];
+            c[j * 4 + i] = b[i * 4 + j];
           }
         }
   }
@@ -69,7 +67,7 @@ public:
   void matrix_scalar_multiplya(int param) {
       for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
-          a[i * 4 + j] = a[i * 4 + j] * param;
+          c[i * 4 + j] = a[i * 4 + j] * param;
         }
       }
   }
@@ -77,7 +75,7 @@ public:
   void matrix_scalar_multiplyb(int param) {
       for (int i = 0; i < 4; ++i) {
         for (int j = 0; j < 4; ++j) {
-          b[i * 4 + j] = b[i * 4 + j] * param;
+          c[i * 4 + j] = b[i * 4 + j] * param;
         }
       }
   }
