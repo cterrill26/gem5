@@ -60,7 +60,7 @@ public:
         for (int j = 0; j < 4; ++j) {
            sum += a[row + j] * b[j];
         }
-        c[i] = sum;
+        c[i] += sum;
     }
   }
 
