@@ -262,10 +262,10 @@ def template MatrixLoadExecute {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          for(int i = 0; i < 16 && fault == NoFault; i++){
-            fault = readMemAtomicLE(xc, traceData, EA, Mem, memAccessFlags);
+          Mat m;
+          fault = xc->readMem(EA, (uint8_t*) &m, 64, memAccessFlags);
+          if (fault == NoFault) {
             %(memacc_code)s;
-            EA += 4;
           }
         }
 
@@ -289,12 +289,10 @@ def template MatrixLoadInitiateAcc {{
         %(op_rd)s;
         %(ea_code)s;
 
+        printf("Initiating mem read\n");
+
         if (fault == NoFault) {
-          for(int i = 0; i < 16 && fault == NoFault; i++){
-            fault = initiateMemRead(xc, traceData, EA, Mem, memAccessFlags);
-            %(memacc_code)s;
-            EA += 4;
-          }
+          fault = xc->initiateMemRead(EA, 64, memAccessFlags);
         }
 
         return fault;
@@ -311,16 +309,14 @@ def template MatrixLoadCompleteAcc {{
         %(op_decl)s;
         %(op_rd)s;
 
-        getMemLE(pkt, Mem, traceData);
+        printf("Completing mem read\n");
+
+
+        Mat m;
+        m = pkt->getRaw<Mat>();
 
         if (fault == NoFault) {
-          Addr EA;
-          %(ea_code)s;
-          for(int i = 0; i < 16 && fault == NoFault; i++){
-            fault = readMemAtomicLE(xc, traceData, EA, Mem, memAccessFlags);
-            %(memacc_code)s;
-            EA += 4;
-          }
+          %(memacc_code)s;
         }
 
         if (fault == NoFault) {
@@ -344,12 +340,9 @@ def template MatrixStoreExecute {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          for(int i = 0; i < 16 && fault == NoFault; i++){
-            %(memacc_code)s;
-            fault = writeMemAtomicLE(xc, traceData, Mem, EA, memAccessFlags,
-                                     nullptr);
-            EA += 4;
-          }
+          Mat m;
+          %(memacc_code)s;
+          fault = xc->writeMem((uint8_t*) &m, 64, EA, memAccessFlags, nullptr);
         }
 
         if (fault == NoFault) {
@@ -377,12 +370,9 @@ def template MatrixStoreInitiateAcc {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          for(int i = 0; i < 16 && fault == NoFault; i++) {
-            %(memacc_code)s;
-            fault = writeMemTimingLE(xc, traceData, Mem, EA,
-                                   memAccessFlags, nullptr);
-            EA += 4;
-          }
+          Mat m;
+          %(memacc_code)s;
+          fault = xc->writeMem((uint8_t*) &m, 64, EA, memAccessFlags, nullptr);
         }
 
         if (fault == NoFault) {
@@ -415,11 +405,9 @@ def template VectorLoadExecute {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          for(int i = 0; i < 4 && fault == NoFault; i++){
-            fault = readMemAtomicLE(xc, traceData, EA, Mem, memAccessFlags);
-            %(memacc_code)s;
-            EA += 4;
-          }
+          Vec v;
+          fault = xc->readMem(EA, (uint8_t*) &v, 16, memAccessFlags);
+          %(memacc_code)s;
         }
 
         if (fault == NoFault) {
@@ -443,11 +431,7 @@ def template VectorLoadInitiateAcc {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          for(int i = 0; i < 4 && fault == NoFault; i++){
-            fault = initiateMemRead(xc, traceData, EA, Mem, memAccessFlags);
-            %(memacc_code)s;
-            EA += 4;
-          }
+          fault = xc->initiateMemRead(EA, 16, memAccessFlags);
         }
 
         return fault;
@@ -464,16 +448,11 @@ def template VectorLoadCompleteAcc {{
         %(op_decl)s;
         %(op_rd)s;
 
-        getMemLE(pkt, Mem, traceData);
+        Vec v;
+        v = pkt->getRaw<Vec>();
 
         if (fault == NoFault) {
-          Addr EA;
-          %(ea_code)s;
-          for(int i = 0; i < 4 && fault == NoFault; i++){
-            fault = readMemAtomicLE(xc, traceData, EA, Mem, memAccessFlags);
-            %(memacc_code)s;
-            EA += 4;
-          }
+          %(memacc_code)s;
         }
 
         if (fault == NoFault) {
@@ -483,6 +462,73 @@ def template VectorLoadCompleteAcc {{
         return fault;
     }
 }};
+
+def template VectorStoreExecute {{
+    Fault
+    %(class_name)s::execute(ExecContext *xc,
+        Trace::InstRecord *traceData) const
+    {
+        Addr EA;
+        Fault fault = NoFault;
+
+        %(op_decl)s;
+        %(op_rd)s;
+        %(ea_code)s;
+
+        if (fault == NoFault) {
+          Vec v;
+          %(memacc_code)s;
+          fault = xc->writeMem((uint8_t*) &v, 16, EA, memAccessFlags, nullptr);
+        }
+
+        if (fault == NoFault) {
+            %(postacc_code)s;
+        }
+
+        if (fault == NoFault) {
+            %(op_wb)s;
+        }
+
+        return fault;
+    }
+}};
+
+def template VectorStoreInitiateAcc {{
+    Fault
+    %(class_name)s::initiateAcc(ExecContext *xc,
+        Trace::InstRecord *traceData) const
+    {
+        Addr EA;
+        Fault fault = NoFault;
+
+        %(op_decl)s;
+        %(op_rd)s;
+        %(ea_code)s;
+
+        if (fault == NoFault) {
+          Vec v;
+          %(memacc_code)s;
+          fault = xc->writeMem((uint8_t*) &v, 16, EA, memAccessFlags, nullptr);
+        }
+
+        if (fault == NoFault) {
+            %(op_wb)s;
+        }
+
+        return fault;
+    }
+}};
+
+def template VectorStoreCompleteAcc {{
+    Fault
+    %(class_name)s::completeAcc(PacketPtr pkt, ExecContext *xc,
+        Trace::InstRecord *traceData) const
+    {
+        return NoFault;
+    }
+}};
+
+
 
 def format MatrixLoad(memacc_code, ea_code = {{EA = Rs1 + offset;}},
         offset_code={{offset = sext<12>(IMM12);}},
@@ -506,4 +552,12 @@ def format VectorLoad(memacc_code, ea_code = {{EA = Rs1 + offset;}},
     (header_output, decoder_output, decode_block, exec_output) = \
         LoadStoreBase(name, Name, offset_code, ea_code, memacc_code, mem_flags,
         inst_flags, 'Load', exec_template_base='VectorLoad')
+}};
+
+def format VectorStore(memacc_code, ea_code={{EA = Rs1 + offset;}},
+        offset_code={{offset = sext<12>(IMM5 | (IMM7 << 5));}},
+        mem_flags=[], inst_flags=[]) {{
+    (header_output, decoder_output, decode_block, exec_output) = \
+        LoadStoreBase(name, Name, offset_code, ea_code, memacc_code, mem_flags,
+        inst_flags, 'Store', exec_template_base='VectorStore')
 }};

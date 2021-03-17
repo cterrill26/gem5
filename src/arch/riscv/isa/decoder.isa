@@ -425,18 +425,25 @@ decode QUADRANT default Unknown::unknown() {
             }
             format MatrixLoad {
                 0x1: matrix_lda({{
-                    xc->tcBase()->getCpuPtr()->matrixUnit.a[i] = Mem_uw;
+                      for(int i = 0; i < 16; i++)
+                        xc->tcBase()->getCpuPtr()->
+                          matrixUnit.a.vals[i] = m.vals[i];
                 }}, inst_flags=FloatMemReadOp);
             }
             format MatrixLoad {
                 0x2: matrix_ldb({{
-                    xc->tcBase()->getCpuPtr()->matrixUnit.b[i] = Mem_uw;
+                      for(int i = 0; i < 16; i++)
+                        xc->tcBase()->getCpuPtr()->
+                          matrixUnit.b.vals[i] = m.vals[i];
                 }}, inst_flags=FloatMemReadOp);
             }
             format MatrixStore {
                 0x3: matrix_st({{
-                    Mem_uw = xc->tcBase()->getCpuPtr()->matrixUnit.c[i];
-                    xc->tcBase()->getCpuPtr()->matrixUnit.c[i] = 0;
+                      for(int i = 0; i < 16; i++){
+                        m.vals[i] = xc->tcBase()->getCpuPtr()->
+                          matrixUnit.c.vals[i];
+                        xc->tcBase()->getCpuPtr()->matrixUnit.c.vals[i] = 0;
+                      }
                 }}, inst_flags=FloatMemWriteOp);
             }
             format ROp{
@@ -446,49 +453,53 @@ decode QUADRANT default Unknown::unknown() {
             }
             format VectorLoad {
                 0x5: matrix_ldv({{
-                    xc->tcBase()->getCpuPtr()->matrixUnit.b[i] = Mem_uw;
+                      for(int i = 0; i < 4; i++)
+                        xc->tcBase()->getCpuPtr()->
+                          matrixUnit.b.vals[i] = v.vals[i];
                 }}, inst_flags=FloatMemReadOp);
             }
+
+            format VectorStore {
+                0x6: matrix_stv({{
+                      for(int i = 0; i < 4; i++){
+                        v.vals[i] = xc->tcBase()->getCpuPtr()->
+                          matrixUnit.c.vals[i];
+                        xc->tcBase()->getCpuPtr()->
+                          matrixUnit.c.vals[i] = 0;
+                      }
+                }}, inst_flags=FloatMemWriteOp);
+            }
+
             format ROp{
-                0x6: matrix_vector_product({{
+                0x7: matrix_vector_product({{
                     xc->tcBase()->getCpuPtr()->
-                    matrixUnit.matrix_vector_product();
+                      matrixUnit.matrix_vector_product();
                 }});
             }
-            //format ScalarLoad{
-              //  0x9: matrix_lds({{
-                //    xc->tcBase()->getCpuPtr()->matrixUnit.scalar = Mem_uw;
-                //}}, inst_flags=FloatMemReadOp);
-            //}
-
-            //format ROp{
-              //  0xb: matrix_scalar_multiplyb({{
-              //      xc->tcBase()->getCpuPtr()->
-              //      matrixUnit.matrix_scalar_multiplyb();
-              //  }});
-            //}
         }
         0x0a: decode FUNCT3 {
             format ROp{
                 0x0: matrix_scalar_multiplya({{
                     xc->tcBase()->getCpuPtr()->
-                    matrixUnit.matrix_scalar_multiplya(Rs2_sw);
+                      matrixUnit.matrix_scalar_multiplya(Rs2_sw);
                 }});
             }
             format ROp{
                 0x1: matrix_scalar_multiplyb({{
                     xc->tcBase()->getCpuPtr()->
-                    matrixUnit.matrix_scalar_multiplyb(Rs2_sw);
+                      matrixUnit.matrix_scalar_multiplyb(Rs2_sw);
                 }});
             }
             format ROp{
                 0x2: matrix_transposea({{
-                    xc->tcBase()->getCpuPtr()->matrixUnit.transposea();
+                    xc->tcBase()->getCpuPtr()->
+                      matrixUnit.transposea();
                 }});
             }
             format ROp{
                 0x3: matrix_transposeb({{
-                    xc->tcBase()->getCpuPtr()->matrixUnit.transposeb();
+                    xc->tcBase()->getCpuPtr()->
+                      matrixUnit.transposeb();
                 }});
             }
         }
