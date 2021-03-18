@@ -121,6 +121,11 @@ class MinorFUPool(SimObject):
 
     funcUnits = VectorParam.MinorFU("functional units")
 
+
+class MinorDefaultMatMulFU(MinorFU):
+    opClasses = minorMakeOpClassSet(['MatMul'])
+    opLat = 6
+
 class MinorDefaultIntFU(MinorFU):
     opClasses = minorMakeOpClassSet(['IntAlu'])
     timings = [MinorFUTiming(description="Int",
@@ -177,7 +182,7 @@ class MinorDefaultFUPool(MinorFUPool):
     funcUnits = [MinorDefaultIntFU(), MinorDefaultIntFU(),
         MinorDefaultIntMulFU(), MinorDefaultIntDivFU(),
         MinorDefaultFloatSimdFU(), MinorDefaultPredFU(),
-        MinorDefaultMemFU(), MinorDefaultMiscFU()]
+        MinorDefaultMemFU(), MinorDefaultMiscFU(), MinorDefaultMatMulFU()]
 
 class ThreadPolicy(Enum): vals = ['SingleThreaded', 'RoundRobin', 'Random']
 
