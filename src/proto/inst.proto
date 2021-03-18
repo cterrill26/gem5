@@ -96,7 +96,7 @@ message Inst {
     MemWrite = 31;
     IprAccess = 32;
     InstPrefetch = 33;
-    MatMul = 34;
+    Mat = 34;
   }
 
   optional InstType type = 6; // add, mul, fp add, load, store, simd add, …

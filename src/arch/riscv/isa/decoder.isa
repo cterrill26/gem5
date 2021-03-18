@@ -421,7 +421,7 @@ decode QUADRANT default Unknown::unknown() {
             format ROp {
                 0x0: matrix_multiply({{
                     xc->tcBase()->getCpuPtr()->matrixUnit.multiply();
-                    }}, MatMulOp);
+                    }}, MatOp);
             }
             format MatrixLoad {
                 0x1: matrix_lda({{
@@ -444,12 +444,12 @@ decode QUADRANT default Unknown::unknown() {
                           matrixUnit.c.vals[i];
                         xc->tcBase()->getCpuPtr()->matrixUnit.c.vals[i] = 0;
                       }
-                }});
+                    }});
             }
             format ROp{
                 0x4: matrix_add({{
                     xc->tcBase()->getCpuPtr()->matrixUnit.add();
-                }});
+                    }}, MatOp);
             }
             format VectorLoad {
                 0x5: matrix_ldv({{
@@ -474,7 +474,7 @@ decode QUADRANT default Unknown::unknown() {
                 0x7: matrix_vector_product({{
                     xc->tcBase()->getCpuPtr()->
                       matrixUnit.matrix_vector_product();
-                }});
+                    }}, MatOp);
             }
         }
         0x0a: decode FUNCT3 {
@@ -482,25 +482,25 @@ decode QUADRANT default Unknown::unknown() {
                 0x0: matrix_scalar_multiplya({{
                     xc->tcBase()->getCpuPtr()->
                       matrixUnit.matrix_scalar_multiplya(Rs2_sw);
-                }});
+                    }}, MatOp);
             }
             format ROp{
                 0x1: matrix_scalar_multiplyb({{
                     xc->tcBase()->getCpuPtr()->
                       matrixUnit.matrix_scalar_multiplyb(Rs2_sw);
-                }});
+                    }}, MatOp);
             }
             format ROp{
                 0x2: matrix_transposea({{
                     xc->tcBase()->getCpuPtr()->
                       matrixUnit.transposea();
-                }});
+                    }}, MatOp);
             }
             format ROp{
                 0x3: matrix_transposeb({{
                     xc->tcBase()->getCpuPtr()->
                       matrixUnit.transposeb();
-                }});
+                    }}, MatOp);
             }
         }
 
