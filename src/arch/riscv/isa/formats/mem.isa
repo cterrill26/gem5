@@ -262,7 +262,7 @@ def template MatrixLoadExecute {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          Mat m;
+          //Mat m;
           fault = xc->readMem(EA, (uint8_t*) &m, 64, memAccessFlags);
           if (fault == NoFault) {
             %(memacc_code)s;
@@ -289,8 +289,6 @@ def template MatrixLoadInitiateAcc {{
         %(op_rd)s;
         %(ea_code)s;
 
-        printf("Initiating mem read\n");
-
         if (fault == NoFault) {
           fault = xc->initiateMemRead(EA, 64, memAccessFlags);
         }
@@ -309,10 +307,8 @@ def template MatrixLoadCompleteAcc {{
         %(op_decl)s;
         %(op_rd)s;
 
-        printf("Completing mem read\n");
 
-
-        Mat m;
+        //Mat m;
         m = pkt->getRaw<Mat>();
 
         if (fault == NoFault) {
@@ -339,8 +335,9 @@ def template MatrixStoreExecute {{
         %(op_rd)s;
         %(ea_code)s;
 
+
         if (fault == NoFault) {
-          Mat m;
+          //Mat m;
           %(memacc_code)s;
           fault = xc->writeMem((uint8_t*) &m, 64, EA, memAccessFlags, nullptr);
         }
@@ -369,8 +366,9 @@ def template MatrixStoreInitiateAcc {{
         %(op_rd)s;
         %(ea_code)s;
 
+
         if (fault == NoFault) {
-          Mat m;
+          //Mat m;
           %(memacc_code)s;
           fault = xc->writeMem((uint8_t*) &m, 64, EA, memAccessFlags, nullptr);
         }
@@ -405,7 +403,7 @@ def template VectorLoadExecute {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          Vec v;
+          //Vec v;
           fault = xc->readMem(EA, (uint8_t*) &v, 16, memAccessFlags);
           %(memacc_code)s;
         }
@@ -448,7 +446,7 @@ def template VectorLoadCompleteAcc {{
         %(op_decl)s;
         %(op_rd)s;
 
-        Vec v;
+        //Vec v;
         v = pkt->getRaw<Vec>();
 
         if (fault == NoFault) {
@@ -476,7 +474,7 @@ def template VectorStoreExecute {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          Vec v;
+          //Vec v;
           %(memacc_code)s;
           fault = xc->writeMem((uint8_t*) &v, 16, EA, memAccessFlags, nullptr);
         }
@@ -506,7 +504,7 @@ def template VectorStoreInitiateAcc {{
         %(ea_code)s;
 
         if (fault == NoFault) {
-          Vec v;
+          //Vec v;
           %(memacc_code)s;
           fault = xc->writeMem((uint8_t*) &v, 16, EA, memAccessFlags, nullptr);
         }

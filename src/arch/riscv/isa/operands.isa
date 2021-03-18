@@ -38,8 +38,11 @@ def operand_types {{
     'sd' : 'int64_t',
     'ud' : 'uint64_t',
     'sf' : 'float',
-    'df' : 'double'
-}};
+    'df' : 'double',
+    'sm' : 'Mat',
+    'sv' : 'Vec'
+
+  }};
 
 def operands {{
 #General Purpose Integer Reg Operands
@@ -73,6 +76,8 @@ def operands {{
 
 #Memory Operand
     'Mem': ('Mem', 'ud', None, ('IsMemRef', 'IsLoad', 'IsStore'), 5),
+    'm': ('Mem', 'sm', None, ('IsMemRef', 'IsLoad', 'IsStore'), 6),
+    'v': ('Mem', 'sv', None, ('IsMemRef', 'IsLoad', 'IsStore'), 6),
 
 #Program Counter Operands
     'PC': ('PCState', 'ud', 'pc', (None, None, 'IsControl'), 7),
