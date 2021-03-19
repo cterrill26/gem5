@@ -10,7 +10,7 @@ public:
 
 class Vec{
 public:
-  int vals[16];
+  int vals[4];
 };
 
 class MatrixUnit{
